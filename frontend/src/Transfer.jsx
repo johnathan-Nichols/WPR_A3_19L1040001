@@ -1,20 +1,24 @@
+import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 
 export default function Transfer(props){
   const navigate = useNavigate();
 
-  if(props===undefined){
-    navigate("/");
-  }
+  useEffect(()=>{
+    if(props===undefined){
+      navigate("/");
+    }
+  
+    if(props.loc===undefined){
+      navigate("/");
+    }
+  
+    try{
+      navigate(props.loc);
+    }catch(err){
+      navigate("/");
+    }
+  },[navigate, props])
 
-  if(props.loc===undefined){
-    navigate("/");
-  }
-
-  try{
-    navigate(props.loc);
-  }catch(err){
-    navigate("/");
-  }
   return null;
 }

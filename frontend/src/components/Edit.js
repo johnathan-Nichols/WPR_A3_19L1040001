@@ -13,11 +13,43 @@ export default function Edit() {
         document.title="Edit question | Quiz app"
         async function load(){
             const resQuestion = await loadSingleQuestion(id)
-            setQuestion({...resQuestion})
+            if(resQuestion==null){
+                navigate('/')
+            }else{
+                setQuestion({...resQuestion})
+            }
         }
         load()
-    },[id, loadSingleQuestion])
+    },[id, loadSingleQuestion, navigate])
 
+    function sendSubmit(){
+        let errorMessage = ''        
+        if(question.text.trim().length<1){
+            errorMessage+='You have not typed a question.'
+        }
+        if(question.answers.length<1){
+            if(errorMessage.length>0)errorMessage+=' '
+            errorMessage+='You have not given an answer'
+        }
+        for(const ans of question.answers){
+            if(ans.trim().length<1){
+                if(errorMessage.length>0)errorMessage+=' '
+                errorMessage+='All answers must have data.'
+                break
+            }
+        }
+        if(question.correctAnswer<0){
+            if(errorMessage.length>0)errorMessage+=' '
+            errorMessage+='Please, select a correct answer.'
+        }
+        if(errorMessage.length>0){
+            alert(errorMessage)
+            return
+        } 
+
+        if(editQuestion(question)) navigate('/')
+    }
+    
     return (
         <main>
             <div className="container">
@@ -44,13 +76,35 @@ export default function Edit() {
                                     }}
                                     onRadioChange={()=>setQuestion({...question, correctAnswer:index})}
                                     removeThis={()=>{
+                                        console.log(question) 
+                                        console.log(question.correctAnswer)
+                                        console.log(index)
+
+                                        //create new array that is safe to edit
                                         let tempArray = [...question.answers]
+                                        console.log('a')
+
+                                        //remove the question
                                         tempArray.splice(index, 1)
-                                        if(question.correctAnswer >= tempArray.length){
-                                            setQuestion({...question, answers:tempArray, correctAnswer:tempArray.length===0?0:tempArray.length-1})
-                                        }else{
-                                            setQuestion({...question, answers:tempArray})
+                                        console.log('b')
+
+                                        //check if answerIndex is this index
+                                        if(question.correctAnswer===index){
+                                            setQuestion({...question, answers:tempArray, correctAnswer:-1})
+                                        console.log('c')
+                                            return
                                         }
+
+                                        //if correct answer is greater than the question being deleted, remove 1
+                                        if(question.correctAnswer){
+                                            setQuestion({...question, answers:tempArray, correctAnswer:question.correctAnswer-1})
+                                        console.log('d')
+                                            return
+                                        }
+
+                                        console.log('e')
+                                        //index is fine, just remove answer                                        
+                                        setQuestion({...question, answers:tempArray})
                                     }}
                                 />
                             )
@@ -66,10 +120,7 @@ export default function Edit() {
                     </div>
     
                     <div className="actions">
-                        <button className="btn btn-blue btn-large" onClick={()=>{
-                            editQuestion(question)
-                            navigate('/')
-                        }}><i className="fas fa-save"></i> Save</button>
+                        <div className="btn btn-blue btn-large" onClick={()=>{sendSubmit()}}><i className="fas fa-save"></i> Save</div>
                     </div>
                 </form>}
             </div>
