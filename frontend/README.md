@@ -12,4 +12,4 @@ This project was made following the Assignment 3 guidelines uploaded to FIT.HANU
 - When hosted on Heroku.com, this app may use Mongo Database Atlas.
 
 ## Availability
-This app will be hosted on Heroku.com but it will also be set up to allow use on localhost:3000, the server is ran on localhost:3001.
+This app will be hosted on Heroku.com at (https://a3-19l1040001-wpr.herokuapp.com/) but it will also be set up to allow use on localhost:3000, the server is ran on localhost:3001.
